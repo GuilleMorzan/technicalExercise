@@ -1,7 +1,8 @@
 *.class
 *.bat 
 
-*.log  
+*.log 
+*.log.* 
 *.recommenders
 target/
 .settings/
