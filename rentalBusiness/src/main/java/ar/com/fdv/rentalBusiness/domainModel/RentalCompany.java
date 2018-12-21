@@ -1,18 +1,22 @@
 package ar.com.fdv.rentalBusiness.domainModel;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
 import ar.com.fdv.rentalBusiness.businessException.BadRequestException;
+import ar.com.fdv.rentalBusiness.businessException.InsufficientFundsException;
 import ar.com.fdv.rentalBusiness.businessException.NotAvailableBikesException;
 import ar.com.fdv.rentalBusiness.dto.CustomerOrder;
 import ar.com.fdv.rentalBusiness.rentalStrategy.RentalStrategy;
+import ar.com.fdv.rentalBusiness.utils.ApplicationProperties;
 import ar.com.fdv.rentalBusiness.utils.LoggerUtils;
 
 public class RentalCompany {
-	private Float cash = 0F;
+	private BigDecimal cash = new BigDecimal(0);
 	private List<Bike> availableBikes = new ArrayList<Bike>();
 
 	private static final Logger LOGGER = Logger.getLogger(RentalCompany.class.getName());
@@ -21,17 +25,17 @@ public class RentalCompany {
 		super();
 	}
 
-	public RentalCompany(Float cash, List<Bike> availableBikes) {
+	public RentalCompany(BigDecimal cash, List<Bike> availableBikes) {
 		super();
 		this.cash = cash;
 		this.availableBikes = availableBikes;
 	}
 
-	public Float getCash() {
+	public BigDecimal getCash() {
 		return cash;
 	}
 
-	public void setCash(Float cash) {
+	public void setCash(BigDecimal cash) {
 		this.cash = cash;
 	}
 
@@ -43,29 +47,30 @@ public class RentalCompany {
 		this.availableBikes = availableBikes;
 	}
 	
-	public void rent(List<CustomerOrder> customerOrders) throws BadRequestException, NotAvailableBikesException, IOException{
+	public void rent(Customer customer, List<CustomerOrder> customerOrders) throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
 		List<Bike> rentedBikes = new ArrayList<Bike>();
-		Float totalAmount = 0F;
+		BigDecimal totalAmount = new BigDecimal(0);
 		
 		LoggerUtils.configureLogger(LOGGER);
 		LOGGER.info("A customer wants to rent one or more bikes.");
 
-		validateInputParameter(customerOrders);
+		validateInputParameters(customer,customerOrders);
 		for(CustomerOrder customerOrder: customerOrders){
 			RentalStrategy rentalStrategy = customerOrder.getRentalStrategy();
 			Integer timeQuantity = customerOrder.getTimeQuantity();
 			
 			validateCustomerOrder(customerOrder);
 			Bike bikeToBeRent = getABike();
-			totalAmount = totalAmount + rentalStrategy.rent(bikeToBeRent, timeQuantity);
+			totalAmount = totalAmount.add(rentalStrategy.rent(bikeToBeRent, timeQuantity));
 			rentedBikes.add(bikeToBeRent);
 		}
+		charge(customer, totalAmount, rentedBikes);
 	}
 
-	private void validateInputParameter(List<CustomerOrder> customerOrders) throws BadRequestException {
-		if(customerOrders == null || customerOrders.size() == 0){
-			LOGGER.severe("The list of customer orders is null or empty.");
-			throw new BadRequestException("The list of customer orders is null or empty.");
+	private void validateInputParameters(Customer customer, List<CustomerOrder> customerOrders) throws BadRequestException {
+		if(customer == null || customerOrders == null || customerOrders.size() == 0){
+			LOGGER.severe("The customer is null or the list of customer's orders is null or empty.");
+			throw new BadRequestException("The customer is null or the list of customer's orders is null or empty.");
 		}
 	}
 
@@ -81,6 +86,46 @@ public class RentalCompany {
 			LOGGER.severe("The rental company does not have any bike at this moment.");
 			throw new NotAvailableBikesException("The rental company does not have any bike at this moment.");
 		}
-		return availableBikes.get(0);
+		return availableBikes.remove(0);
+	}
+	
+	private void charge(Customer customer, BigDecimal totalAmount, List<Bike> rentedBikes) throws IOException, InsufficientFundsException {
+		if(isAFamilyRental(rentedBikes)){
+			totalAmount = applyDiscount(totalAmount);
+		}
+		chargeToCustomer(customer, totalAmount);
+		deliverBikesToCustomer(customer, rentedBikes);
+	}
+
+	private boolean isAFamilyRental(List<Bike> rentedBikes) throws IOException {
+		ApplicationProperties applicationProperties = ApplicationProperties.getInstance();
+		String familyRentalMinimum = applicationProperties.getPropertyValue("FAMILY_RENTAL_MINIMUM");
+		String familyRentalMaximum = applicationProperties.getPropertyValue("FAMILY_RENTAL_MAXIMUM");
+		return ((new Integer(rentedBikes.size())).compareTo(new Integer(familyRentalMinimum)) >= 0 
+					&& new Integer(rentedBikes.size()).compareTo(new Integer(familyRentalMaximum)) <= 0);
+	}
+
+	private BigDecimal applyDiscount(BigDecimal totalAmount) throws IOException {
+		ApplicationProperties applicationProperties = ApplicationProperties.getInstance();
+		BigDecimal familyRentalDiscountRate = new BigDecimal(applicationProperties.getPropertyValue("FAMILY_RENTAL_DISCOUNT_RATE"));
+		return totalAmount.subtract(totalAmount.multiply(familyRentalDiscountRate).divide(new BigDecimal(100)));
+	}
+
+	private void chargeToCustomer(Customer customer, BigDecimal totalAmount) throws InsufficientFundsException {
+		customer.pay(totalAmount);
+		cash = cash.add(totalAmount);
+	}
+
+	private void deliverBikesToCustomer(Customer customer, List<Bike> rentedBikes) {
+		customer.getBikes(rentedBikes);
+	}
+
+	public void collect(Customer customer, Bike bikeReturned) throws IOException, InsufficientFundsException {
+		availableBikes.add(bikeReturned);
+		if(bikeReturned.getReturnDate().before(new Date())){
+			ApplicationProperties applicationProperties = ApplicationProperties.getInstance();
+			BigDecimal fine = new BigDecimal(applicationProperties.getPropertyValue("FINE"));
+			customer.pay(fine);
+		}
 	}
 }

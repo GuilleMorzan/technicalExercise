@@ -1,6 +1,7 @@
 package ar.com.fdv.rentalBusiness.rentalStrategy;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import ar.com.fdv.rentalBusiness.businessException.BadRequestException;
 import ar.com.fdv.rentalBusiness.domainModel.Bike;
@@ -11,7 +12,7 @@ public class RentalByWeekStrategy extends RentalStrategy{
 	private final Integer HOURS_PER_WEEK = 24 * 7;
 	
 	@Override
-	public Float rent(Bike bike, Integer weeksQuantity) throws IOException, BadRequestException {
+	public BigDecimal rent(Bike bike, Integer weeksQuantity) throws IOException, BadRequestException {
 		validateParameters(bike, weeksQuantity);
 		setBikeReturnDate(bike, weeksQuantity);
 		return calculateCharge(weeksQuantity);
@@ -22,9 +23,9 @@ public class RentalByWeekStrategy extends RentalStrategy{
 		bike.setReturnDate(TimeUtils.addHours(hours));
 	}
 
-	private Float calculateCharge(Integer weeksQuantity) throws IOException {
+	private BigDecimal calculateCharge(Integer weeksQuantity) throws IOException {
 		ApplicationProperties applicationProperties = ApplicationProperties.getInstance();
 		String chargeByWeek = applicationProperties.getPropertyValue("CHARGE_BY_WEEK");	
-		return new Float(new Float(weeksQuantity) * new Float(chargeByWeek));
+		return new BigDecimal(new BigDecimal(weeksQuantity).multiply(new BigDecimal(chargeByWeek)).intValue());
 	}
 }

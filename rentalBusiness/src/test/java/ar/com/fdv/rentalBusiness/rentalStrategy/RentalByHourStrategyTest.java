@@ -1,6 +1,7 @@
 package ar.com.fdv.rentalBusiness.rentalStrategy;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.junit.Assert;
@@ -9,22 +10,25 @@ import org.junit.Test;
 
 import ar.com.fdv.rentalBusiness.businessException.BadRequestException;
 import ar.com.fdv.rentalBusiness.domainModel.Bike;
+import ar.com.fdv.rentalBusiness.domainModel.RentalCompany;
 
 public class RentalByHourStrategyTest {
 	final Long MILISECONDS_PER_HOUR = new Long(60 * 60 * 1000);
 	Bike bike = null;
+	RentalCompany rentalCompany = null;
 	RentalByHourStrategy rentalByHourStrategy = null;
 	
 	@Before
 	public void initialize(){
-		bike = new Bike(1);
+		rentalCompany = new RentalCompany();
+		bike = new Bike(1, rentalCompany);
 		rentalByHourStrategy = new RentalByHourStrategy();
 	}
 	
 	@Test
 	public void testRentalCharge() throws IOException, BadRequestException{
-		Float charge = rentalByHourStrategy.rent(bike, 3);
-		Assert.assertEquals(charge, 15F, 0F);
+		BigDecimal charge = rentalByHourStrategy.rent(bike, 3);
+		Assert.assertEquals(charge, new BigDecimal(15));
 	}	
 
 	@Test

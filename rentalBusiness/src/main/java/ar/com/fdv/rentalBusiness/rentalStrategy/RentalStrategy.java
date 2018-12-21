@@ -1,14 +1,15 @@
 package ar.com.fdv.rentalBusiness.rentalStrategy;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import ar.com.fdv.rentalBusiness.businessException.BadRequestException;
 import ar.com.fdv.rentalBusiness.domainModel.Bike;
 
 public abstract class RentalStrategy {
 
-	public Float rent(Bike bike, Integer quantity) throws IOException, BadRequestException{
-		return 0F;
+	public BigDecimal rent(Bike bike, Integer quantity) throws IOException, BadRequestException{
+		return new BigDecimal(0);
 	}
 	
 	public void validateParameters(Bike bike, Integer timeQuantity) throws BadRequestException{
