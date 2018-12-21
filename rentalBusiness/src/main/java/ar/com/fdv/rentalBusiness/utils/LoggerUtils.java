@@ -6,7 +6,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LoggerUtil {
+public class LoggerUtils {
 
 	public static void configureLogger(Logger logger){
 		try{
