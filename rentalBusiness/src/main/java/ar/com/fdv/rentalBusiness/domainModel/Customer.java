@@ -1,10 +1,9 @@
-package ar.com.fdv.domainModel;
+package ar.com.fdv.rentalBusiness.domainModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Customer {
-
 	private Float cash= 0F;
 	private List<Bike> rentedBikes = new ArrayList<Bike>();
 	

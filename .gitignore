@@ -1,4 +1,8 @@
 *.class
+*.bat 
+
+*.log  
+*.recommenders
 target/
 .settings/
 .classpath

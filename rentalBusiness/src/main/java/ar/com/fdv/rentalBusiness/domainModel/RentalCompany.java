@@ -1,4 +1,4 @@
-package ar.com.fdv.domainModel;
+package ar.com.fdv.rentalBusiness.domainModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,6 @@ public class RentalCompany {
 	
 	public RentalCompany() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public RentalCompany(Float cash, List<Bike> availableBikes) {

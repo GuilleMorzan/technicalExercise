@@ -1,10 +1,10 @@
-package ar.com.fdv.domainModel;
+package ar.com.fdv.rentalBusiness.domainModel;
 
 import java.util.Date;
 
 public class Bike {
 	private Integer serialNumber;
-	private Date returnTime = null;
+	private Date returnDate = null;
 
 	public Bike() {
 		super();
@@ -23,11 +23,11 @@ public class Bike {
 		this.serialNumber = serialNumber;
 	}
 
-	public Date getReturnTime() {
-		return returnTime;
+	public Date getReturnDate() {
+		return returnDate;
 	}
 
-	public void setReturnTime(Date returnTime) {
-		this.returnTime = returnTime;
+	public void setReturnDate(Date returnDate) {
+		this.returnDate = returnDate;
 	}
 }

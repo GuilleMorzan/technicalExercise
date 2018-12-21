@@ -7,6 +7,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import ar.com.fdv.rentalBusiness.domainModel.Bike;
+import ar.com.fdv.rentalBusiness.domainModel.Customer;
+import ar.com.fdv.rentalBusiness.domainModel.RentalCompany;
+
 public class DomainModelTest {
 
 	private Bike bike1 = null;
