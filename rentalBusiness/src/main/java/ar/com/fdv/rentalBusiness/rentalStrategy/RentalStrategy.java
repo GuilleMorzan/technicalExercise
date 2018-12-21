@@ -2,9 +2,18 @@ package ar.com.fdv.rentalBusiness.rentalStrategy;
 
 import java.io.IOException;
 
+import ar.com.fdv.rentalBusiness.businessException.BadRequestException;
 import ar.com.fdv.rentalBusiness.domainModel.Bike;
 
-public interface RentalStrategy {
+public abstract class RentalStrategy {
 
-	public Float rent(Bike bike, Integer quantity) throws IOException;
+	public Float rent(Bike bike, Integer quantity) throws IOException, BadRequestException{
+		return 0F;
+	}
+	
+	public void validateParameters(Bike bike, Integer hoursQuantity) throws BadRequestException{
+		if(bike == null || hoursQuantity == null || hoursQuantity < 1){
+			throw new BadRequestException("The bike or the hours quantity is NULL or the hours quantity is 0 or a negative number.");
+		}
+	}
 }

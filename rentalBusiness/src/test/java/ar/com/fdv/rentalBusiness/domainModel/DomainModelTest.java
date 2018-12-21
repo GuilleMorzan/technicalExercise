@@ -1,4 +1,4 @@
-package ar.com.fdv.domainModel;
+package ar.com.fdv.rentalBusiness.domainModel;
 
 import java.util.ArrayList;
 import java.util.List;

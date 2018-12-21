@@ -2,15 +2,17 @@ package ar.com.fdv.rentalBusiness.rentalStrategy;
 
 import java.io.IOException;
 
+import ar.com.fdv.rentalBusiness.businessException.BadRequestException;
 import ar.com.fdv.rentalBusiness.domainModel.Bike;
 import ar.com.fdv.rentalBusiness.utils.ApplicationProperties;
 import ar.com.fdv.rentalBusiness.utils.TimeUtils;
 
-public class RentalByDayStrategy implements RentalStrategy{
+public class RentalByDayStrategy extends RentalStrategy{
 	private final Integer HOURS_PER_DAY = 24;
 	
 	@Override
-	public Float rent(Bike bike, Integer daysQuantity) throws IOException {
+	public Float rent(Bike bike, Integer daysQuantity) throws IOException, BadRequestException {
+		validateParameters(bike, daysQuantity);
 		setBikeReturnDate(bike, daysQuantity);
 		return calculateCharge(daysQuantity);
 	}

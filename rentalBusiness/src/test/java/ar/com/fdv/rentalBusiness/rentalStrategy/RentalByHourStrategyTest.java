@@ -10,49 +10,49 @@ import org.junit.Test;
 import ar.com.fdv.rentalBusiness.businessException.BadRequestException;
 import ar.com.fdv.rentalBusiness.domainModel.Bike;
 
-public class RentalByDayStrategyTest {
-	final Long MILISECONDS_PER_DAY = new Long(24 * 60 * 60 * 1000);
+public class RentalByHourStrategyTest {
+	final Long MILISECONDS_PER_HOUR = new Long(60 * 60 * 1000);
 	Bike bike = null;
-	RentalByDayStrategy rentalByDayStrategy = null;
+	RentalByHourStrategy rentalByHourStrategy = null;
 	
 	@Before
 	public void initialize(){
 		bike = new Bike(1);
-		rentalByDayStrategy = new RentalByDayStrategy();
+		rentalByHourStrategy = new RentalByHourStrategy();
 	}
 	
 	@Test
 	public void testRentalCharge() throws IOException, BadRequestException{
-		Float charge = rentalByDayStrategy.rent(bike, 2);
-		Assert.assertEquals(charge, 40F, 0F);
+		Float charge = rentalByHourStrategy.rent(bike, 3);
+		Assert.assertEquals(charge, 15F, 0F);
 	}	
 
 	@Test
 	public void testBikeReturnDate() throws IOException, BadRequestException{
 		Date now = new Date();
-		rentalByDayStrategy.rent(bike, 2);
+		rentalByHourStrategy.rent(bike, 3);
 		Long diff = bike.getReturnDate().getTime() - now.getTime();
 		//It considers the time that the test spends running
-		Assert.assertTrue(diff - (new Long(2 * MILISECONDS_PER_DAY)) < new Long(50000));
+		Assert.assertTrue(diff - (new Long(3 * MILISECONDS_PER_HOUR)) < new Long(50000));
 	}	
 
 	@Test(expected=BadRequestException.class)
-	public void testNegativeDays() throws IOException, BadRequestException{
-		rentalByDayStrategy.rent(bike, -1);
+	public void testNegativeHours() throws IOException, BadRequestException{
+		rentalByHourStrategy.rent(bike, -1);
 	}	
 
 	@Test(expected=BadRequestException.class)
-	public void testZeroDays() throws IOException, BadRequestException{
-		rentalByDayStrategy.rent(bike, 0);
+	public void testZeroHours() throws IOException, BadRequestException{
+		rentalByHourStrategy.rent(bike, 0);
 	}	
 	
 	@Test(expected=BadRequestException.class)
-	public void testNullDays() throws IOException, BadRequestException{
-		rentalByDayStrategy.rent(bike, null);
+	public void testNullHours() throws IOException, BadRequestException{
+		rentalByHourStrategy.rent(bike, null);
 	}	
 
 	@Test(expected=BadRequestException.class)
 	public void testNullBike() throws IOException, BadRequestException{
-		rentalByDayStrategy.rent(null, 5);
+		rentalByHourStrategy.rent(null, 5);
 	}
 }
