@@ -106,19 +106,19 @@ public class RentalCompanyTest {
 	}
 
 	@Test
-	public void testRentalCompanyEarn() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
+	public void testRentalCompanyChargeOperation() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
 		rentalCompany.rent(customer, customerOrders1);
 		Assert.assertTrue(rentalCompany.getCash().equals(new BigDecimal(1005)));
 	}
 
 	@Test
-	public void testRentalCompanyDeliverBike() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
+	public void testRentalCompanyDelivery() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
 		rentalCompany.rent(customer, customerOrders1);
 		Assert.assertTrue(rentalCompany.getAvailableBikes().size() == 1);
 	}
 	
 	@Test
-	public void testCustomerPay() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
+	public void testCustomerPaymentOperation() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
 		rentalCompany.rent(customer, customerOrders1);
 		Assert.assertTrue(customer.getCash().equals(new BigDecimal(95)));
 	}
@@ -150,7 +150,7 @@ public class RentalCompanyTest {
 	}
 	
 	@Test
-	public void testMultipleCustomerOrdersButNotAFamilyPlan() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
+	public void testMoreThan5CustomerOrders() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
 		rentalCompany.getAvailableBikes().add(new Bike());
 		rentalCompany.getAvailableBikes().add(new Bike());
 		rentalCompany.getAvailableBikes().add(new Bike());
@@ -164,7 +164,7 @@ public class RentalCompanyTest {
 	}
 
 	@Test
-	public void testCustomerReturnBikeDelayed() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
+	public void testCustomerReturnBikeOperation() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
 		Bike bike = new Bike(7, rentalCompany);
 		bike.setReturnDate(new Date());
 		customer.getRentedBikes().add(bike);
@@ -195,7 +195,7 @@ public class RentalCompanyTest {
 	}
 
 	@Test(expected=BadRequestException.class)
-	public void testRentalStrategyIsNull() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
+	public void testNullRentalStrategy() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
 		customerOrder1 = new CustomerOrder(null, 1);
 		List<CustomerOrder> customerOrders = new ArrayList<CustomerOrder>();
 		customerOrders.add(customerOrder1);
@@ -203,7 +203,7 @@ public class RentalCompanyTest {
 	}
 
 	@Test(expected=BadRequestException.class)
-	public void testTimeQuantityIsNull() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
+	public void testNullTimeQuantity() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
 		customerOrder1 = new CustomerOrder(rentalByDayStrategy, null);
 		List<CustomerOrder> customerOrders = new ArrayList<CustomerOrder>();
 		customerOrders.add(customerOrder1);
