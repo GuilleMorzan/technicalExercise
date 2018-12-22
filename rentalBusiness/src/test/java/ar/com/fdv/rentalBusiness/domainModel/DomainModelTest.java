@@ -23,7 +23,7 @@ public class DomainModelTest {
 		List<Bike> availableBikes = new ArrayList<Bike>();
 		
 		initializeBikes();
-		initializeListsOfBikes(rentedBikes, availableBikes);
+		addElementsToListsOfBikes(rentedBikes, availableBikes);
 		initializeCustomers(rentedBikes);
 		initializeRentalCompany(availableBikes); 
 	}
@@ -34,7 +34,7 @@ public class DomainModelTest {
 		bike3 = new Bike(3, rentalCompany);
 	}
 
-	private void initializeListsOfBikes(List<Bike> rentedBikes,
+	private void addElementsToListsOfBikes(List<Bike> rentedBikes,
 			List<Bike> availableBikes) {
 		rentedBikes.add(bike1);
 		availableBikes.add(bike2);
@@ -60,7 +60,7 @@ public class DomainModelTest {
 	}
 	
 	@Test
-	public void testSettersDomainModel(){
+	public void testDomainModelSetters(){
 		RentalCompany rentalCompany2 = new RentalCompany();
 		bike1.setRentalCompany(rentalCompany2);
 		bike1.setSerialNumber(5);

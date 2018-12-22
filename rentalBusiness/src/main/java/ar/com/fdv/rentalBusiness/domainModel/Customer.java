@@ -56,7 +56,7 @@ public class Customer {
 		return true;
 	}
 
-	public void getBikes(List<Bike> bikes) {
+	public void receiveBikes(List<Bike> bikes) {
 		this.rentedBikes.addAll(bikes);
 	}
 	

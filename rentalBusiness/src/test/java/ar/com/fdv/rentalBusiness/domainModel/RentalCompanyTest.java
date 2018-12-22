@@ -45,11 +45,11 @@ public class RentalCompanyTest {
 	@Before
 	public void initialize(){
 		initializeBikes();
-		initializeListsOfBikes();
+		addElementsToListsOfBikes();
 		initializeCustomer();
 		initializeRentalStrategies();
 		initializeCustomerOrders();
-		initializeListOfCustomerOrders();
+		addElementsToListOfCustomerOrders();
 		initializeRentalCompany(); 
 	}
 	
@@ -59,7 +59,7 @@ public class RentalCompanyTest {
 		bike3 = new Bike(3, rentalCompany);
 	}
 	
-	private void initializeListsOfBikes() {
+	private void addElementsToListsOfBikes() {
 		rentedBikes.add(bike1);
 		availableBikes.add(bike2);
 		availableBikes.add(bike3);
@@ -84,7 +84,7 @@ public class RentalCompanyTest {
 		customerOrder6 = new CustomerOrder(rentalByWeekStrategy, 6);
 	}
 
-	private void initializeListOfCustomerOrders() {
+	private void addElementsToListOfCustomerOrders() {
 		customerOrders1.add(customerOrder1);
 		customerOrders2.add(customerOrder1);
 		customerOrders2.add(customerOrder2);
@@ -97,8 +97,6 @@ public class RentalCompanyTest {
 		customerOrders4.add(customerOrder4);
 		customerOrders4.add(customerOrder5);
 		customerOrders4.add(customerOrder6);
-
-
 	}
 
 	private void initializeRentalCompany() {
@@ -112,7 +110,7 @@ public class RentalCompanyTest {
 	}
 
 	@Test
-	public void testRentalCompanyDelivery() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
+	public void testRentalCompanyDeliveryOperation() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
 		rentalCompany.rent(customer, customerOrders1);
 		Assert.assertTrue(rentalCompany.getAvailableBikes().size() == 1);
 	}
@@ -124,7 +122,7 @@ public class RentalCompanyTest {
 	}
 	
 	@Test
-	public void testCustomerReceiveBike() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
+	public void testCustomerReceiveBikeOperation() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
 		rentalCompany.rent(customer, customerOrders1);
 		Assert.assertTrue(customer.getRentedBikes().size() == 1);
 	}
@@ -175,11 +173,6 @@ public class RentalCompanyTest {
 	}
 
 	@Test(expected=BadRequestException.class)
-	public void testCustomerReturnBikeWithEmptyRentedBikes() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
-		customer.giveBackBike();
-	}
-	
-	@Test(expected=BadRequestException.class)
 	public void testNullCustomer() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
 		rentalCompany.rent(null, customerOrders1);
 	}
@@ -202,6 +195,11 @@ public class RentalCompanyTest {
 		rentalCompany.rent(customer, customerOrders);
 	}
 
+	@Test(expected=BadRequestException.class)
+	public void testCustomerReturnBikeWithEmptyRentedBikes() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
+		customer.giveBackBike();
+	}
+	
 	@Test(expected=BadRequestException.class)
 	public void testNullTimeQuantity() throws BadRequestException, NotAvailableBikesException, IOException, InsufficientFundsException{
 		customerOrder1 = new CustomerOrder(rentalByDayStrategy, null);

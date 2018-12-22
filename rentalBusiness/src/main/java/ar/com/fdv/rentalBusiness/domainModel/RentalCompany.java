@@ -117,7 +117,7 @@ public class RentalCompany {
 	}
 
 	private void deliverBikesToCustomer(Customer customer, List<Bike> rentedBikes) {
-		customer.getBikes(rentedBikes);
+		customer.receiveBikes(rentedBikes);
 	}
 
 	public void collect(Customer customer, Bike bikeReturned) throws IOException, InsufficientFundsException {
@@ -126,6 +126,8 @@ public class RentalCompany {
 			ApplicationProperties applicationProperties = ApplicationProperties.getInstance();
 			BigDecimal fine = new BigDecimal(applicationProperties.getPropertyValue("FINE"));
 			customer.pay(fine);
+			cash = cash.add(fine);
 		}
+		bikeReturned.setReturnDate(null);
 	}
 }
